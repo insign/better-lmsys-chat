@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name Better LMSYS Chat
 // @namespace https://github.com/insign/better-lmsys-chat
-// @version 202403161921
+// @version 202403161923
 // @description make chat lmsys chat better and clean
 // @match https://chat.lmsys.org/*
 // @icon https://www.google.com/s2/favicons?sz=64&domain=lmsys.org
@@ -264,7 +264,7 @@
 
   perma('#chatbot', el => el.style.height !== '80vh', el => {
     console.info('height', el.style.height)
-    el.style.height = '80vh'
+    el.style.height = '75vh'
   })
 
   perma('.gap', el => el.style.gap !== '6px', el => {
