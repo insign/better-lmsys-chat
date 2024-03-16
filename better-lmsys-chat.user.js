@@ -1,12 +1,11 @@
 // ==UserScript==
 // @name Better LMSYS Chat
 // @namespace https://github.com/insign/better-lmsys-chat
-// @version 202403161505
+// @version 202403161921
 // @description make chat lmsys chat better and clean
 // @match https://chat.lmsys.org/*
 // @icon https://www.google.com/s2/favicons?sz=64&domain=lmsys.org
-// @author Hélio <insign@gmail.com>
-// @copyright Hélio <insign@gmail.com>
+// @author Hélio <open@helio.me>
 // @license WTFPL
 // @downloadURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.user.js
 // @updateURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.meta.js
@@ -23,11 +22,69 @@
 
   const rename = (el, text) => el.textContent = text
 
-  const perma = (selector, check, fn, interval = 50) => {
+  /**
+   * Executes a function on selected elements repeatedly until the condition is met.
+   *
+   * @param {string|Element|NodeList|Array<string|Element|NodeList>} selector - The CSS selector, element, NodeList, or an array containing a combination of these types to select the elements.
+   * @param {function(Element): boolean} check - A function that checks if the condition is met for an element. It should return `true` if the condition is met and `false` otherwise.
+   * @param {function(Element): void} fn - The function to be executed on each element that meets the condition.
+   * @param {number} [interval=50] - The interval in milliseconds between each check of the elements.
+   *
+   * @example
+   * // Example usage with CSS selector
+   * perma('.example-class', (el) => el.textContent !== 'Example', (el) => {
+   *   el.textContent = 'Example';
+   * });
+   *
+   * @example
+   * // Example usage with element
+   * const element = document.querySelector('#example-id');
+   * perma(element, (el) => el.classList.contains('active'), (el) => {
+   *   el.classList.add('active');
+   * });
+   *
+   * @example
+   * // Example usage with NodeList
+   * const elements = document.querySelectorAll('.example-class');
+   * perma(elements, (el) => el.dataset.status !== 'ready', (el) => {
+   *   el.dataset.status = 'ready';
+   * });
+   *
+   * @example
+   * // Example usage with an array of selectors
+   * perma(['.example-class', '#example-id'], (el) => el.style.display !== 'none', (el) => {
+   *   el.style.display = 'none';
+   * });
+   */
+  const perma = (selector, check, fn, interval = 1000) => {
     let intervalId = null
 
     const checkAndExecute = () => {
-      const elements = $$(selector)
+      let elements = []
+
+      if (Array.isArray(selector)) {
+        selector.forEach((item) => {
+          if (typeof item === 'string') {
+            elements = elements.concat(Array.from($$(item)))
+          }
+          else if (item instanceof Element) {
+            elements.push(item)
+          }
+          else if (item instanceof NodeList) {
+            elements = elements.concat(Array.from(item))
+          }
+        })
+      }
+      else if (typeof selector === 'string') {
+        elements = $$(selector)
+      }
+      else if (selector instanceof Element) {
+        elements = [ selector ]
+      }
+      else if (selector instanceof NodeList) {
+        elements = Array.from(selector)
+      }
+
       elements.forEach((element) => {
         if (check(element)) {
           fn(element)
@@ -59,11 +116,50 @@
 
     startInterval() // Start initially
   }
-
-  function when(selectors = [ 'html' ], callback = null, slow = 0) {
+  /**
+   * Waits for specific elements to be present in the DOM and executes a callback function when they are found.
+   *
+   * @param {string|Element|NodeList|Array<string|Element|NodeList|function(): Element|null>} [selectors=['html']] - The CSS selector(s), element(s), NodeList(s), or array function(s) that return an element or null. Can be a single selector, element, NodeList, array function, or an array containing a combination of these types. Defaults to ['html'] if not provided.
+   * @param {function(Element): void} [callback=null] - The callback function to be executed when the specified elements are found. It receives the first found element as an argument. If not provided, the function will resolve without executing a callback.
+   * @param {number} [slow=0] - The delay in milliseconds before executing the callback function. If set to 0 (default), the callback will be executed immediately after the elements are found.
+   *
+   * @returns {Promise<void>} A promise that resolves when the specified elements are found and the callback function (if provided) has been executed.
+   *
+   * @example
+   * // Example usage with a single CSS selector
+   * when('.example-class', (element) => {
+   *   console.log('Element found:', element);
+   * });
+   *
+   * @example
+   * // Example usage with multiple CSS selectors
+   * when(['.example-class', '#example-id'], (element) => {
+   *   console.log('Element found:', element);
+   * });
+   *
+   * @example
+   * // Example usage with an array function
+   * when(() => document.querySelector('.example-class'), (element) => {
+   *   console.log('Element found:', element);
+   * });
+   *
+   * @example
+   * // Example usage with a delay before executing the callback
+   * when('.example-class', (element) => {
+   *   console.log('Element found:', element);
+   * }, 1000);
+   *
+   * @example
+   * // Example usage without a callback function
+   * when('.example-class').then(() => {
+   *   console.log('Element found');
+   * });
+   */
+  const when  = (selectors = [ 'html' ], callback = null, slow = 0) => {
     if (!Array.isArray(selectors)) {
       selectors = [ selectors ]
     }
+
     return new Promise((resolve) => {
       const executeCallback = (element) => {
         if (callback) {
@@ -85,7 +181,24 @@
 
       const checkSelectors = () => {
         for (const selector of selectors) {
-          const element = $(selector)
+          let element = null
+
+          if (typeof selector === 'string') {
+            element = $(selector)
+          }
+          else if (selector instanceof Element) {
+            element = selector
+          }
+          else if (selector instanceof NodeList) {
+            element = selector[0]
+          }
+          else if (typeof selector === 'function') {
+            element = selector()
+            if (element === null) {
+              continue
+            }
+          }
+
           if (element) {
             executeCallback(element)
             return true
@@ -113,12 +226,11 @@
       observer.observe(document.body, { childList: true, subtree: true })
     })
   }
-
-  perma('#component-6-button', el => el.textContent !== 'Battle', el => rename(el, 'Battle'))
-  perma('#component-44-button', el => el.textContent !== 'Side-by-Side', el => rename(el, 'Side-by-Side'))
-  perma('#component-81-button', el => el.textContent !== 'Chat', el => rename(el, 'Chat'))
-  perma('#component-108-button', el => el.textContent !== 'Vision Chat', el => rename(el, 'Vision Chat'))
-  perma('#component-140-button', el => el.textContent !== 'Ranking', el => rename(el, 'Ranking'))
+  perma('#component-6-button', el => el.textContent !== 'Battle', el => rename(el, 'Battle'), 100)
+  perma('#component-44-button', el => el.textContent !== 'Side-by-Side', el => rename(el, 'Side-by-Side'), 100)
+  perma('#component-81-button', el => el.textContent !== 'Chat', el => rename(el, 'Chat'), 100)
+  perma('#component-108-button', el => el.textContent !== 'Vision Chat', el => rename(el, 'Vision Chat'), 100)
+  perma('#component-140-button', el => el.textContent !== 'Ranking', el => rename(el, 'Ranking'), 100)
 
 
   when([
@@ -127,8 +239,9 @@
     when('#component-81-button', click, 1000)
 
     perma('.tab-nav button', el => el.style.padding !== 'var(--size-1) var(--size-3)', el => {
+      console.info('padding', el.style.padding)
       el.style.padding = 'var(--size-1) var(--size-3)'
-    })
+    }, 100)
 
     perma('.tabitem', el => el.style.padding !== '0px', el => {
       console.info(el.style.padding)
@@ -150,13 +263,51 @@
   })
 
   perma('#chatbot', el => el.style.height !== '80vh', el => {
+    console.info('height', el.style.height)
     el.style.height = '80vh'
-  }, 2000)
+  })
 
   perma('.gap', el => el.style.gap !== '6px', el => {
     console.info('gap', el.style.gap)
     el.style.gap = '6px'
-  }, 2000)
+  })
 
 
+  // no-radius
+  perma([ 'button' ], el => el.style.borderRadius !== '0px', el => {
+    console.info('border-radius', el.style.borderRadius)
+    el.style.borderRadius = 0
+  })
+
+  perma('#input_box', el => el.style.border !== '0px', el => {
+    console.info('Found input_box parent')
+    el.style.border                  = 0
+    el.style.padding                 = 0
+    el.parentNode.style.border       = 0
+    el.parentNode.style.borderRadius = 0
+
+    // run on the child textarea
+    el.querySelector('textarea').style.borderRadius = 0
+  })
+
+  // buttons send, 93, 32, 69, 132
+  perma([
+    '#component-93', '#component-32', '#component-69', '#component-132',
+  ], el => el.style.minWidth !== '65px', el => {
+    console.info('buttons send', el.style.minWidth)
+    el.style.minWidth = '65px'
+    el.textContent    = '⤴️'
+  })
+
+  perma('#share-region-named', el => el.style.border !== '0px', el => {
+    el.style.border       = 0
+    el.style.borderRadius = 0
+  })
+
+
+  // gapper
+  perma('.svelte-15lo0d8', el => el.style.gap !== 'var(--spacing-md)', el => {
+    console.info('gap', el.style.gap)
+    el.style.gap = 'var(--spacing-md)'
+  })
 })()
