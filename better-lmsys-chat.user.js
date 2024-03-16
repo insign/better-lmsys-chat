@@ -8,8 +8,8 @@
 //  @author       Hélio <insign@gmail.com>
 //  @copyright    Hélio <insign@gmail.com>
 //  @license      WTFPL
-// @downloadURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.user.js
-// @updateURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.meta.js
+//  @downloadURL  https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.user.js
+//  @updateURL    https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.meta.js
 //  ==/UserScript==
 
 (function() {
