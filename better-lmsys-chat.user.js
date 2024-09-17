@@ -3,12 +3,13 @@
 // @namespace https://github.com/insign/better-lmsys-chat
 // @version 202403161923
 // @description make chat lmsys chat better and clean
+// @match https://lmarena.ai/*
 // @match https://chat.lmsys.org/*
 // @icon https://www.google.com/s2/favicons?sz=64&domain=lmsys.org
 // @author Hélio <open@helio.me>
 // @license WTFPL
 // @downloadURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.user.js
-// @updateURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.meta.js
+// @updateURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.user.js
 // ==/UserScript==
 
 (function() {
@@ -226,17 +227,20 @@
       observer.observe(document.body, { childList: true, subtree: true })
     })
   }
-  perma('#component-6-button', el => el.textContent !== 'Battle', el => rename(el, 'Battle'), 100)
-  perma('#component-44-button', el => el.textContent !== 'Side-by-Side', el => rename(el, 'Side-by-Side'), 100)
-  perma('#component-81-button', el => el.textContent !== 'Chat', el => rename(el, 'Chat'), 100)
+
+  when('.prose', el => !el.closest('.wrapper'), remove)
+
+  perma('#component-18-button', el => el.textContent !== 'Battle', el => rename(el, 'Battle'), 100)
+  perma('#component-63-button', el => el.textContent !== 'SbS', el => rename(el, 'Side-by-Side'), 100)
+  perma('#component-107-button', el => el.textContent !== 'Chat', el => rename(el, 'Chat'), 100)
   perma('#component-108-button', el => el.textContent !== 'Vision Chat', el => rename(el, 'Vision Chat'), 100)
   perma('#component-140-button', el => el.textContent !== 'Ranking', el => rename(el, 'Ranking'), 100)
+  perma('#component-231-button', el => el.textContent !== 'About', el => rename(el, 'About'), 100)
 
 
   when([
     '.svelte-1ed2p3z', '#component-151-button', '#component-54', '#component-87', '#component-114', '#component-11',
   ], remove).then(() => { // all texts and about button :(
-    when('#component-81-button', click, 1000)
 
     perma('.tab-nav button', el => el.style.padding !== 'var(--size-1) var(--size-3)', el => {
       console.info('padding', el.style.padding)
@@ -262,7 +266,7 @@
     el.style.textAlign = 'center'
   })
 
-  perma('#chatbot', el => el.style.height !== '80vh', el => {
+  perma('#chatbot', el => el.style.height !== '75vh', el => {
     console.info('height', el.style.height)
     el.style.height = '75vh'
   })
@@ -290,9 +294,8 @@
     el.querySelector('textarea').style.borderRadius = 0
   })
 
-  // buttons send, 93, 32, 69, 132
-  perma([
-    '#component-93', '#component-32', '#component-69', '#component-132',
+  // buttons send, 1123
+  perma([ '#component-123',
   ], el => el.style.minWidth !== '65px', el => {
     console.info('buttons send', el.style.minWidth)
     el.style.minWidth = '65px'
@@ -310,4 +313,8 @@
     console.info('gap', el.style.gap)
     el.style.gap = 'var(--spacing-md)'
   })
+
+  when('.built-with', remove, 1000)
+
+  when('#component-107-button', click, 1000)
 })()
