@@ -1,4 +1,4 @@
-# Better LMSYS Chat
+# Better LMSYS Chat (LMarena.ai)
 
 A userscript just to try make the chat a little better and clean
 
