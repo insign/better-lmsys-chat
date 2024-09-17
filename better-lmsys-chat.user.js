@@ -1,8 +1,8 @@
 // ==UserScript==
-// @name Better LMSYS Chat
+// @name Better LMSYS (LMarena) Chat
 // @namespace https://github.com/insign/better-lmsys-chat
 // @version 202409172046
-// @description make chat lmsys chat better and clean
+// @description make chat lmsys (lmarena) chat better and clean
 // @match https://lmarena.ai/*
 // @match https://chat.lmsys.org/*
 // @icon https://www.google.com/s2/favicons?sz=64&domain=lmsys.org
