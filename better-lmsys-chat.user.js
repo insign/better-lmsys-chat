@@ -1,15 +1,13 @@
 // ==UserScript==
-// @name Better LMSYS (LMarena) Chat
+// @name Better LMarena (lmsys) Chat
 // @namespace https://github.com/insign/better-lmsys-chat
-// @version 202409172050
+// @version 202412070521
 // @description make chat lmsys (lmarena) chat better and clean
 // @match https://lmarena.ai/*
 // @match https://chat.lmsys.org/*
 // @icon https://www.google.com/s2/favicons?sz=64&domain=lmsys.org
 // @author Hélio <open@helio.me>
 // @license WTFPL
-// @downloadURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.user.js
-// @updateURL https://update.greasyfork.org/scripts/489922/Better%20LMSYS%20Chat.user.js
 // ==/UserScript==
 
 (function() {
@@ -295,10 +293,11 @@
   })
 
   // buttons send, 1123
-  perma([ '#component-123',
-  ], el => el.style.minWidth !== '65px', el => {
+  perma([
+    '.submit-button',
+  ], el => el.style.minWidth !== '35px', el => {
     console.info('buttons send', el.style.minWidth)
-    el.style.minWidth = '65px'
+    el.style.minWidth = '35px'
     el.textContent    = '⤴️'
   })
 
@@ -316,5 +315,8 @@
 
   when('.built-with', remove, 1000)
 
-  when('#component-107-button', click, 1000)
+  // When appears "Model B" clicks on "Direct Chat" - I needed to use another setTimeout inside
+  when('.svelte-nab2ao', () => setTimeout(() => $('#component-123-button').click(), 1000))
+
+
 })()
