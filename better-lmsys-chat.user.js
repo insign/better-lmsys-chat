@@ -1,11 +1,11 @@
 // ==UserScript==
 // @name Better LMarena (lmsys) Chat
 // @namespace https://github.com/insign/better-lmsys-chat
-// @version 202412070521
-// @description make chat lmsys (lmarena) chat better and clean
+// @version 202412221856
+// @description make chat lmarena (lmsys) chat better and clean
 // @match https://lmarena.ai/*
 // @match https://chat.lmsys.org/*
-// @icon https://www.google.com/s2/favicons?sz=64&domain=lmsys.org
+// @icon https://www.google.com/s2/favicons?sz=64&domain=lmarena.ai
 // @author Hélio <open@helio.me>
 // @license WTFPL
 // ==/UserScript==
@@ -226,7 +226,7 @@
     })
   }
 
-  when('.prose', el => !el.closest('.wrapper'), remove)
+  // when('.prose', el => !el.closest('.wrap'), remove)
 
   perma('#component-18-button', el => el.textContent !== 'Battle', el => rename(el, 'Battle'), 100)
   perma('#component-63-button', el => el.textContent !== 'SbS', el => rename(el, 'Side-by-Side'), 100)
@@ -235,9 +235,18 @@
   perma('#component-140-button', el => el.textContent !== 'Ranking', el => rename(el, 'Ranking'), 100)
   perma('#component-231-button', el => el.textContent !== 'About', el => rename(el, 'About'), 100)
 
+  // ###notice_markdown > .svelte-1ed2p3z > .svelte-gq7qsu.prose > .prose.svelte-8tpqd2.md
+  when([
+    '#notice_markdown > .svelte-1ed2p3z > .svelte-gq7qsu.prose > .prose.svelte-8tpqd2.md', // top blocks of notice
+    '#component-26 > .gap.svelte-vt1mxs > .hide-container.padded.svelte-12cmxck.block', // ToS
+    '#component-139 > .gap.svelte-vt1mxs > .hide-container.padded.svelte-12cmxck.block', // ToS
+    '#component-95 > .gap.svelte-vt1mxs > .hide-container.padded.svelte-12cmxck.block', // ToS
+    '#leaderboard_markdown > .svelte-1ed2p3z > .svelte-gq7qsu.prose > .prose.svelte-8tpqd2.md', // top blocks of leaderboard
+  ], remove)
+
 
   when([
-    '.svelte-1ed2p3z', '#component-151-button', '#component-54', '#component-87', '#component-114', '#component-11',
+    '#component-151-button', '#component-54', '#component-87', '#component-114', '#component-11',
   ], remove).then(() => { // all texts and about button :(
 
     perma('.tab-nav button', el => el.style.padding !== 'var(--size-1) var(--size-3)', el => {
