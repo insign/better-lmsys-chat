@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name Better LMarena (lmsys) Chat
 // @namespace https://github.com/insign/better-lmsys-chat
-// @version 202412281425
+// @version 202412281434
 // @description make chat lmarena (lmsys) chat better and clean. Removes annoying startup alerts.
 // @match https://lmarena.ai/*
 // @match https://chat.lmsys.org/*
