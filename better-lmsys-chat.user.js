@@ -2,7 +2,7 @@
 // @name Better LMarena (lmsys) Chat
 // @namespace https://github.com/insign/better-lmsys-chat
 // @version 202412281425
-// @description make chat lmarena (lmsys) chat better and clean
+// @description make chat lmarena (lmsys) chat better and clean. Removes annoying startup alerts.
 // @match https://lmarena.ai/*
 // @match https://chat.lmsys.org/*
 // @icon https://www.google.com/s2/favicons?sz=64&domain=lmarena.ai
