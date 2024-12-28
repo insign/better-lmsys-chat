@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name Better LMarena (lmsys) Chat
 // @namespace https://github.com/insign/better-lmsys-chat
-// @version 202412221856
+// @version 202412281425
 // @description make chat lmarena (lmsys) chat better and clean
 // @match https://lmarena.ai/*
 // @match https://chat.lmsys.org/*
@@ -12,6 +12,11 @@
 
 (function() {
   'use strict'
+
+  // Override the default alert function
+  window.alert = function() {
+    console.log('Blocked an alert: ', arguments)
+  }
 
   const $      = document.querySelector.bind(document)
   const $$     = document.querySelectorAll.bind(document)
