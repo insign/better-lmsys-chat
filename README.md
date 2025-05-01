@@ -1,4 +1,6 @@
-# Better LMArena (lmsys) Chat
+# ⚠️ Moved to [Userscripts Collection](https://github.com/insign/userscripts)
+
+## Better LMArena (lmsys) Chat
 
 A userscript just to try make the chat a little better and clean.
 Also blocks annoying startup alerts.
